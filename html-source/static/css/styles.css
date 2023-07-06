@@ -1,0 +1,16 @@
+.my-footer {
+    height: 5em;
+    background-color: #333;
+    margin-top: 1.5em;
+    color: #fff;
+    padding: 2em;
+    font-size: 80%;
+}
+
+.notie-container {
+    box-shadow: none;
+}
+
+.swal2-actions {
+    z-index: 0;
+}
