@@ -1,0 +1,63 @@
+{{template "base" .}}
+
+{{define "content"}}
+<div class="container">
+
+    <div class="row">
+        <div class="col">
+            <img src="/static/images/generals-quarter.jpg"
+                class="img-fluid img-thumbnail rounded mx-auto d-block w-50 my-1" alt="general's quarter">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <h1 class="text-center mt-3">General's Quarters</h1>
+            <p>
+                Your home away from home, set on the great Aravalli Mountain ranges, this will be a vacation to
+                remember.
+                Your home away from home, set on the great Aravalli Mountain ranges, this will be a vacation to
+                remember.
+                Your home away from home, set on the great Aravalli Mountain ranges, this will be a vacation to
+                remember.
+                Your home away from home, set on the great Aravalli Mountain ranges, this will be a vacation to
+                remember.
+                Your home away from home, set on the great Aravalli Mountain ranges, this will be a vacation to
+                remember.
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col text-center">
+            <a id="check-availability-button" href="#!" class="btn btn-success">Check Availability</a>
+        </div>
+    </div>
+
+</div>
+{{end}}
+
+{{define "js"}}
+<script>
+    document.getElementById("check-availability-button").addEventListener("click", function () {
+        let html = `
+            <form id="check-availability-form" action="" method="post" novalidate class="needs-validation">
+                <div class="row" id="reservation-dates-modal">
+                    <div class="col mb-3">
+                        <input disabled required type="text" class="form-control" id="start" name="start"
+                        aria-describedby="startDateHelp" placeholder="Arrival">
+                    </div>
+                    <div class="col mb-3">
+                        <input disabled required type="text" class="form-control" id="end" name="end" 
+                        aria-describedby="endDateHelp" placeholder="Departure">
+                    </div>
+                </div>      
+            </form> 
+            `
+        attention.custom({
+            msg: html,
+            title: "Choose your dates"
+        })
+    });
+</script>
+{{end}}
