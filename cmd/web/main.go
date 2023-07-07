@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/AdiAkhileshSingh15/bookmyroom/pkg/config"
-	"github.com/AdiAkhileshSingh15/bookmyroom/pkg/handlers"
-	"github.com/AdiAkhileshSingh15/bookmyroom/pkg/render"
+	"github.com/AdiAkhileshSingh15/bookmyroom/internal/config"
+	"github.com/AdiAkhileshSingh15/bookmyroom/internal/handlers"
+	"github.com/AdiAkhileshSingh15/bookmyroom/internal/render"
 	"github.com/alexedwards/scs/v2"
 )
 
