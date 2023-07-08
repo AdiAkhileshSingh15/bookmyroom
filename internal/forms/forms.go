@@ -35,7 +35,7 @@ func (f *Form) Required(fields ...string) {
 
 func (f *Form) Has(field string) bool {
 	x := f.Get(field)
-	return x != ""
+	return strings.TrimSpace(x) != ""
 }
 
 func (f *Form) MinLength(field string, length int) bool {
