@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/AdiAkhileshSingh15/bookmyroom/internal/config"
+	"github.com/AdiAkhileshSingh15/bookmyroom/internal/driver"
 	"github.com/AdiAkhileshSingh15/bookmyroom/internal/handlers"
 	"github.com/AdiAkhileshSingh15/bookmyroom/internal/helpers"
 	"github.com/AdiAkhileshSingh15/bookmyroom/internal/models"
@@ -24,10 +25,11 @@ var infoLog *log.Logger
 var errorLog *log.Logger
 
 func main() {
-	err := run()
+	db, err := run()
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.SQL.Close()
 
 	fmt.Println(fmt.Sprintf("Starting application on port %s", portNumber))
 
@@ -39,8 +41,11 @@ func main() {
 	_ = srv.ListenAndServe()
 }
 
-func run() error {
+func run() (*driver.DB, error) {
 	gob.Register(models.Reservation{})
+	gob.Register(models.User{})
+	gob.Register(models.Room{})
+	gob.Register(models.Restriction{})
 	// change this to true when in production
 	app.InProduction = false
 
@@ -58,20 +63,29 @@ func run() error {
 
 	app.Session = session
 
+	// connect to database
+	log.Println("Connecting to database...")
+	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=bookmyroom user=postgres password=adi123")
+	if err != nil {
+		log.Fatal("Cannot connect to database! Dying...")
+		return nil, err
+	}
+	log.Println("Connected to database!")
+
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal(err)
-		return err
+		return nil, err
 	}
 
 	app.TemplateCache = tc
 	app.UseCache = app.InProduction
 
-	repo := handlers.NewRepo(&app)
+	repo := handlers.NewRepo(&app, db)
 	handlers.NewHandlers(repo)
 
-	render.NewTemplates(&app)
+	render.NewRenderer(&app)
 	helpers.NewHelpers(&app)
 
-	return nil
+	return db, nil
 }
