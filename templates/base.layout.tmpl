@@ -80,6 +80,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.3/dist/js/datepicker-full.min.js"></script>
     <script src="https://unpkg.com/notie"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/static/js/app.js"></script>
 
     {{block "js" .}}
 
@@ -87,27 +88,27 @@
 
     <script>
         let attention = Prompt();
-        // Example starter JavaScript for disabling form submissions if there are invalid fields
-        (function () {
-            'use strict'
+        let reservation = reservationModal();
+            // Example starter JavaScript for disabling form submissions if there are invalid fields
+            (function () {
+                'use strict'
 
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.querySelectorAll('.needs-validation')
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.querySelectorAll('.needs-validation')
 
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
+                // Loop over them and prevent submission
+                Array.prototype.slice.call(forms)
+                    .forEach(function (form) {
+                        form.addEventListener('submit', function (event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
 
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
-
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+            })()
 
         function notify(msg, msgType) {
             notie.alert({
@@ -125,115 +126,89 @@
             })
         }
 
-        function Prompt() {
-            let toast = function (c) {
-                const {
-                    msg = "",
-                    icon = "success",
-                    position = "top-end"
-                } = c
+        {{with .Error}}
+            notify("{{.}}", "error");
+        {{end}}
 
-                const Toast = Swal.mixin({
-                    toast: true,
-                    title: msg,
-                    position: position,
-                    icon: icon,
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                })
+        {{with .Flash}}
+            notify("{{.}}", "success");
+        {{end}}
 
-                Toast.fire({})
-            }
+        {{with .Warning}}
+            notify("{{.}}", "warning");
+        {{end}}
 
-            let success = function (c) {
-                const {
-                    msg = "",
-                    title = "",
-                    footer = "",
-                } = c
+        function reservationModal() {
+            let modal = function (roomID) {
+                let html = `
+                        <form id="check-availability-form" action="" method="post" novalidate class="needs-validation">
+                            <div class="row" id="reservation-dates-modal">
+                                <div class="col mb-3">
+                                    <input disabled required type="text" class="form-control" id="start" name="start"
+                                    aria-describedby="startDateHelp" placeholder="Arrival" autocomplete="off">
+                                </div>
+                                <div class="col mb-3">
+                                    <input disabled required type="text" class="form-control" id="end" name="end" 
+                                    aria-describedby="endDateHelp" placeholder="Departure" autocomplete="off">
+                                </div>
+                            </div>      
+                        </form> 
+                        `
+                attention.custom({
+                    msg: html,
+                    title: "Choose your dates",
 
-                Swal.fire({
-                    icon: 'success',
-                    title: title,
-                    text: msg,
-                    footer: footer,
-                })
-
-            }
-
-            let error = function (c) {
-                const {
-                    msg = "",
-                    title = "",
-                    footer = "",
-                } = c
-
-                Swal.fire({
-                    icon: 'error',
-                    title: title,
-                    text: msg,
-                    footer: footer,
-                })
-
-            }
-
-            async function custom(c) {
-                const {
-                    msg = "",
-                    title = ""
-                } = c;
-
-                const { value: formValues } = await Swal.fire({
-                    title: title,
-                    html: msg,
-                    backdrop: false,
-                    focusConfirm: false,
-                    showCancelButton: true,
                     willOpen: () => {
-                        if (c.willOpen !== undefined) {
-                            c.willOpen();
-                        }
+                        const elem = document.getElementById('reservation-dates-modal');
+                        const rangepicker = new DateRangePicker(elem, {
+                            format: 'yyyy-mm-dd',
+                            showOnFocus: true,
+                            minDate: new Date()
+                        });
                     },
-                    preConfirm: () => {
-                        return [
-                            document.getElementById('start').value,
-                            document.getElementById('end').value
-                        ]
-                    },
+
                     didOpen: () => {
-                        if (c.didOpen !== undefined) {
-                            c.didOpen();
-                        }
+                        document.getElementById('start').removeAttribute('disabled');
+                        document.getElementById('end').removeAttribute('disabled');
+                    },
+
+                    callback: function (result) {
+
+                        let form = document.getElementById("check-availability-form");
+                        let formData = new FormData(form);
+                        formData.append("csrf_token", "{{.CSRFToken}}");
+                        formData.append("room_id", `${roomID}`);
+
+                        fetch('/search-availability-json', {
+                            method: "POST",
+                            body: formData
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data);
+                                if (data.ok) {
+                                    attention.custom({
+                                        icon: "success",
+                                        showConfirmButton: false,
+                                        msg: `<p>Room is available!</p>
+                    <p><a href="/book-room?id=${data.room_id}&s=${data.start_date}&e=${data.end_date}" class="btn btn-primary">Book Now!</a></p>`,
+                                    })
+                                } else {
+                                    attention.error({
+                                        type: "error",
+                                        text: "Room is not available!",
+                                        time: 2
+                                    })
+                                }
+                            })
                     }
                 })
-
-                if (formValues) {
-                    if (formValues.dismiss != Swal.DismissReason.cancel) {
-                        if (formValues.value != "") {
-                            if (c.callback !== undefined) {
-                                c.callback(formValues);
-                            }
-                        } else {
-                            c.callback(false);
-                        }
-                    } else {
-                        c.callback(false);
-                    }
-                }
             }
-
             return {
-                toast: toast,
-                success: success,
-                error: error,
-                custom: custom
+                modal: modal
             }
         }
+
     </script>
 
 </body>

@@ -14,12 +14,12 @@
 
                     <div class="col mb-3">
                         <input required type="text" class="form-control" name="start" aria-describedby="startDateHelp"
-                            placeholder="Arrival date">
+                            placeholder="Arrival date" autocomplete="off">
                     </div>
 
                     <div class="col mb-3">
                         <input required type="text" class="form-control" name="end" aria-describedby="endDateHelp"
-                            placeholder="Departure date">
+                            placeholder="Departure date" autocomplete="off">
                     </div>
 
                 </div>
@@ -36,7 +36,7 @@
 <script>
     const elem = document.getElementById('reservation-dates');
     const rangepicker = new DateRangePicker(elem, {
-        format: 'dd-mm-yyyy',
+        format: 'yyyy-mm-dd',
         showOnFocus: true,
         minDate: new Date()
     });

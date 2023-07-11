@@ -40,24 +40,7 @@
 {{define "js"}}
 <script>
     document.getElementById("check-availability-button").addEventListener("click", function () {
-        let html = `
-            <form id="check-availability-form" action="" method="post" novalidate class="needs-validation">
-                <div class="row" id="reservation-dates-modal">
-                    <div class="col mb-3">
-                        <input disabled required type="text" class="form-control" id="start" name="start"
-                        aria-describedby="startDateHelp" placeholder="Arrival">
-                    </div>
-                    <div class="col mb-3">
-                        <input disabled required type="text" class="form-control" id="end" name="end" 
-                        aria-describedby="endDateHelp" placeholder="Departure">
-                    </div>
-                </div>      
-            </form> 
-            `
-        attention.custom({
-            msg: html,
-            title: "Choose your dates"
-        })
-    });
+        reservation.modal(2)
+    })
 </script>
 {{end}}
