@@ -293,6 +293,14 @@ ALTER TABLE ONLY public.rooms
 
 
 --
+-- Name: schema_migration schema_migration_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.schema_migration
+    ADD CONSTRAINT schema_migration_pkey PRIMARY KEY (version);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
