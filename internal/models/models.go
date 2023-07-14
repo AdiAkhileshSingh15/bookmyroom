@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type User struct {
 	ID          int       `json:"id"`
@@ -53,4 +55,13 @@ type RoomRestriction struct {
 	Room          Room      `json:"room"`
 	Reservation   Reservation
 	Restriction   Restriction
+}
+
+type MailData struct {
+	To       string
+	From     string
+	Subject  string
+	Content  string
+	RoomID   int
+	Template string
 }
