@@ -311,7 +311,6 @@ var testPostAvailabilityData = []struct {
 		postedData: url.Values{
 			"start_date": {"2040-01-01"},
 			"end_date":   {"2040-01-02"},
-			"room_id":    {"1"},
 		},
 		expectedStatusCode: http.StatusOK,
 	},
@@ -325,7 +324,6 @@ var testPostAvailabilityData = []struct {
 		postedData: url.Values{
 			"start_date": {"invalid"},
 			"end_date":   {"2040-01-02"},
-			"room_id":    {"1"},
 		},
 		expectedStatusCode: http.StatusTemporaryRedirect,
 	},
