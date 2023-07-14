@@ -78,8 +78,8 @@ function Prompt() {
             },
             preConfirm: () => {
                 return [
-                    document.getElementById('start').value,
-                    document.getElementById('end').value
+                    document.getElementById('start_date').value,
+                    document.getElementById('end_date').value
                 ]
             },
             didOpen: () => {

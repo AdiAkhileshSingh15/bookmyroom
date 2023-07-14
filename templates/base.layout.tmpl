@@ -144,11 +144,11 @@
                         <form id="check-availability-form" action="" method="post" novalidate class="needs-validation">
                             <div class="row" id="reservation-dates-modal">
                                 <div class="col mb-3">
-                                    <input disabled required type="text" class="form-control" id="start" name="start"
+                                    <input disabled required type="text" class="form-control" id="start_date" name="start_date"
                                     aria-describedby="startDateHelp" placeholder="Arrival" autocomplete="off">
                                 </div>
                                 <div class="col mb-3">
-                                    <input disabled required type="text" class="form-control" id="end" name="end" 
+                                    <input disabled required type="text" class="form-control" id="end_date" name="end_date" 
                                     aria-describedby="endDateHelp" placeholder="Departure" autocomplete="off">
                                 </div>
                             </div>      
@@ -168,8 +168,8 @@
                     },
 
                     didOpen: () => {
-                        document.getElementById('start').removeAttribute('disabled');
-                        document.getElementById('end').removeAttribute('disabled');
+                        document.getElementById('start_date').removeAttribute('disabled');
+                        document.getElementById('end_date').removeAttribute('disabled');
                     },
 
                     callback: function (result) {
