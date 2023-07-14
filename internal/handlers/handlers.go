@@ -153,6 +153,37 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	htmlMessage := fmt.Sprintf(`
+		<strong>Reservation Confirmation</strong><br>
+		Dear %s: <br>
+		This is to confirm your reservation from %s to %s.
+	`, reservation.FirstName, reservation.StartDate.Format("2002-01-02"), reservation.EndDate.Format("2002-01-02"))
+
+	msg := models.MailData{
+		To:       reservation.Email,
+		From:     "adi@singh.com",
+		Subject:  "Reservation Confirmation",
+		Content:  htmlMessage,
+		RoomID:   reservation.RoomID,
+		Template: "basic.html",
+	}
+
+	m.App.MailChan <- msg
+
+	htmlMessage = fmt.Sprintf(`
+		<strong>Reservation Notification</strong><br>
+		A reservation has been made for %s from %s to %s.
+	`, reservation.Room.RoomName, reservation.StartDate.Format("2002-01-02"), reservation.EndDate.Format("2002-01-02"))
+
+	msg = models.MailData{
+		To:      "adi@singh.com",
+		From:    "adi@singh.com",
+		Subject: "Reservation Notification",
+		Content: htmlMessage,
+	}
+
+	m.App.MailChan <- msg
+
 	m.App.Session.Put(r.Context(), "reservation", reservation)
 
 	http.Redirect(w, r, "/reservation-summary", http.StatusSeeOther)
@@ -255,8 +286,6 @@ func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	render.Template(w, r, "choose-room.page.tmpl", &models.TemplateData{
 		Data: data,
 	})
-
-	w.Write([]byte(fmt.Sprintf("start date is %s and end date is %s", sd, ed)))
 }
 
 type jsonResponse struct {
