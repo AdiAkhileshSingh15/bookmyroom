@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"testing"
 	"time"
 
 	"github.com/AdiAkhileshSingh15/bookmyroom/internal/config"
@@ -23,7 +24,7 @@ var functions = template.FuncMap{}
 var app config.AppConfig
 var session *scs.SessionManager
 
-func getRoutes() http.Handler {
+func TestMain(m *testing.M) {
 	gob.Register(models.Reservation{})
 	// change this to true when in production
 	app.InProduction = false
@@ -55,6 +56,10 @@ func getRoutes() http.Handler {
 
 	render.NewRenderer(&app)
 
+	os.Exit(m.Run())
+}
+
+func getRoutes() http.Handler {
 	mux := chi.NewRouter()
 
 	mux.Use(middleware.Recoverer)
