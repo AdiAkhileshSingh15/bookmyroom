@@ -40,6 +40,7 @@ type Reservation struct {
 	RoomID    int       `json:"room_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+	Processed int       `json:"processed"`
 	Room      Room      `json:"room"`
 }
 
