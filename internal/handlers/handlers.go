@@ -495,6 +495,84 @@ func (m *Repository) AdminAllReservations(w http.ResponseWriter, r *http.Request
 	})
 }
 
+func (m *Repository) AdminShowReservation(w http.ResponseWriter, r *http.Request) {
+	exploded := strings.Split(r.RequestURI, "/")
+	id, err := strconv.Atoi(exploded[4])
+	if err != nil {
+		m.App.ErrorLog.Println("Cannot convert id to integer")
+		m.App.Session.Put(r.Context(), "error", "Cannot convert id to integer")
+		http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
+		return
+	}
+
+	src := exploded[3]
+
+	stringMap := make(map[string]string)
+	stringMap["src"] = src
+
+	reservation, err := m.DB.GetReservationByID(id)
+	if err != nil {
+		m.App.ErrorLog.Println("Cannot get reservation from database")
+		m.App.Session.Put(r.Context(), "error", "Cannot get reservation from database")
+		http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["reservation"] = reservation
+
+	render.Template(w, r, "admin-reservations-show.page.tmpl", &models.TemplateData{
+		StringMap: stringMap,
+		Data:      data,
+		Form:      forms.New(nil),
+	})
+}
+
+func (m *Repository) AdminPostShowReservation(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		m.App.ErrorLog.Println("Cannot parse form")
+	}
+
+	exploded := strings.Split(r.RequestURI, "/")
+	id, err := strconv.Atoi(exploded[4])
+	if err != nil {
+		m.App.ErrorLog.Println("Cannot convert id to integer")
+		m.App.Session.Put(r.Context(), "error", "Cannot convert id to integer")
+		http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
+		return
+	}
+
+	src := exploded[3]
+
+	stringMap := make(map[string]string)
+	stringMap["src"] = src
+
+	res, err := m.DB.GetReservationByID(id)
+	if err != nil {
+		m.App.ErrorLog.Println("Cannot get reservation from database")
+		m.App.Session.Put(r.Context(), "error", "Cannot get reservation from database")
+		http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
+		return
+	}
+
+	res.FirstName = r.Form.Get("first_name")
+	res.LastName = r.Form.Get("last_name")
+	res.Email = r.Form.Get("email")
+	res.Phone = r.Form.Get("phone")
+
+	err = m.DB.UpdateReservation(res)
+	if err != nil {
+		m.App.ErrorLog.Println("Cannot update reservation in database")
+		m.App.Session.Put(r.Context(), "error", "Cannot update reservation in database")
+		http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
+		return
+	}
+
+	m.App.Session.Put(r.Context(), "flash", "Changes saved")
+	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
+}
+
 func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
 	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})
 }
