@@ -76,6 +76,12 @@ function Prompt() {
                     c.willOpen();
                 }
             },
+            preConfirm: () => {
+                return [
+                    document.getElementById('start_date').value,
+                    document.getElementById('end_date').value
+                ]
+            },
             didOpen: () => {
                 if (c.didOpen !== undefined) {
                     c.didOpen();
