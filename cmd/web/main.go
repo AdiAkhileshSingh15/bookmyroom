@@ -33,7 +33,7 @@ func main() {
 
 	defer close(app.MailChan)
 
-	fmt.Println(fmt.Sprintf("Staring mail listener..."))
+	fmt.Println(fmt.Sprintf("Starting mail listener..."))
 	listenForMail()
 
 	fmt.Println(fmt.Sprintf("Starting application on port %s", portNumber))
@@ -51,6 +51,7 @@ func run() (*driver.DB, error) {
 	gob.Register(models.User{})
 	gob.Register(models.Room{})
 	gob.Register(models.Restriction{})
+	gob.Register(map[string]int{})
 
 	mailChan := make(chan models.MailData)
 	app.MailChan = mailChan
