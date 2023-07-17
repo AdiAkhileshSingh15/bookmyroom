@@ -13,6 +13,12 @@ Dependencies:
 - [simple mail](https://github.com/xhit/go-simple-mail/v2)
 - [Go validator](https://github.com/asaskevich/govalidator)
 
+To check the mailing functionality, you can use the [MailHog](https://github.com/mailhog/MailHog) SMTP testing package.
+And run it on a different host on your server, using:
+```
+~/go/bin/MailHog
+```
+
 In order to build and run this application, it is necessary to 
 install Soda (go install github.com/gobuffalo/pop/... ), create
 a postgres database, fill in the correct values in database.yml, 
