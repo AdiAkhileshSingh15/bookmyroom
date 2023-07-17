@@ -1,5 +1,5 @@
 run:
-	go run cmd/web/main.go cmd/web/middleware.go cmd/web/routes.go cmd/web/send-mail.go
+	go run cmd/web/main.go cmd/web/middleware.go cmd/web/routes.go cmd/web/send-mail.go -dbname=bookmyroom -dbuser=postgres -dbpass=adi123
 
 test:
 	go test -v ./...
