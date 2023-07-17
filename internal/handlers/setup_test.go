@@ -19,13 +19,21 @@ import (
 	"github.com/justinas/nosurf"
 )
 
-var functions = template.FuncMap{}
+var functions = template.FuncMap{
+	"humanDate":  render.HumanDate,
+	"formatDate": render.FormatDate,
+	"iterate":    render.Iterate,
+}
 
 var app config.AppConfig
 var session *scs.SessionManager
 
 func TestMain(m *testing.M) {
 	gob.Register(models.Reservation{})
+	gob.Register(models.User{})
+	gob.Register(models.Room{})
+	gob.Register(models.Restriction{})
+	gob.Register(map[string]int{})
 	// change this to true when in production
 	app.InProduction = false
 
@@ -86,13 +94,33 @@ func getRoutes() http.Handler {
 	mux.Get("/generals-quarter", Repo.Generals)
 	mux.Get("/majors-suite", Repo.Majors)
 
+	mux.Get("/search-availability", Repo.Availability)
+	mux.Post("/search-availability", Repo.PostAvailability)
+	mux.Post("/search-availability-json", Repo.AvailabilityJSON)
+
 	mux.Get("/make-reservation", Repo.Reservation)
 	mux.Post("/make-reservation", Repo.PostReservation)
 	mux.Get("/reservation-summary", Repo.ReservationSummary)
 
-	mux.Get("/search-availability", Repo.Availability)
-	mux.Post("/search-availability", Repo.PostAvailability)
-	mux.Post("/search-availability-json", Repo.AvailabilityJSON)
+	mux.Get("/choose-room/{id}", Repo.ChooseRoom)
+	mux.Get("/book-room", Repo.BookRoom)
+
+	mux.Get("/user/login", Repo.ShowLogin)
+	mux.Post("/user/login", Repo.PostShowLogin)
+	mux.Get("/user/logout", Repo.Logout)
+
+	mux.Route("/admin", func(mux chi.Router) {
+		// mux.Use(Auth)
+		mux.Get("/dashboard", Repo.AdminDashboard)
+		mux.Get("/reservations-new", Repo.AdminNewReservations)
+		mux.Get("/reservations-all", Repo.AdminAllReservations)
+		mux.Get("/reservations-calendar", Repo.AdminReservationsCalendar)
+		mux.Post("/reservations-calendar", Repo.AdminPostReservationsCalendar)
+		mux.Get("/reservations/{src}/{id}/show", Repo.AdminShowReservation)
+		mux.Post("/reservations/{src}/{id}", Repo.AdminPostShowReservation)
+		mux.Get("/process-reservation/{src}/{id}/do", Repo.AdminProcessReservation)
+		mux.Get("/delete-reservation/{src}/{id}/do", Repo.AdminDeleteReservation)
+	})
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
@@ -119,7 +147,7 @@ func CreateTestTemplateCache() (map[string]*template.Template, error) {
 
 	myCache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob("./../../templates/*.page.html")
+	pages, err := filepath.Glob("./../../templates/*.page.tmpl")
 	if err != nil {
 		return nil, err
 	}
@@ -130,13 +158,13 @@ func CreateTestTemplateCache() (map[string]*template.Template, error) {
 		if err != nil {
 			return nil, err
 		}
-		matches, err := filepath.Glob("./../../templates/*.layout.html")
+		matches, err := filepath.Glob("./../../templates/*.layout.tmpl")
 		if err != nil {
 			return nil, err
 		}
 
 		if len(matches) > 0 {
-			ts, err = ts.ParseGlob("./../../templates/*.layout.html")
+			ts, err = ts.ParseGlob("./../../templates/*.layout.tmpl")
 			if err != nil {
 				return nil, err
 			}
