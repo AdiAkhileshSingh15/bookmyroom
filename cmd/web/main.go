@@ -24,6 +24,7 @@ var app config.AppConfig
 var session *scs.SessionManager
 var infoLog *log.Logger
 var errorLog *log.Logger
+var inTest = false
 
 func main() {
 	db, err := run()
@@ -65,11 +66,6 @@ func run() (*driver.DB, error) {
 
 	flag.Parse()
 
-	if *dbName == "" || *dbUser == "" || *dbPass == "" {
-		fmt.Println("Missing required flags")
-		os.Exit(1)
-	}
-
 	mailChan := make(chan models.MailData)
 	app.MailChan = mailChan
 
@@ -92,28 +88,37 @@ func run() (*driver.DB, error) {
 	app.Session = session
 
 	// connect to database
-	log.Println("Connecting to database...")
-	connectionString := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s sslmode=%s", *dbHost, *dbPort, *dbName, *dbUser, *dbPass, *dbSSL)
-	db, err := driver.ConnectSQL(connectionString)
-	if err != nil {
-		log.Fatal("Cannot connect to database! Dying...")
-		return nil, err
+	var db *driver.DB
+	var err error
+	if !inTest {
+		if *dbName == "" || *dbUser == "" || *dbPass == "" {
+			fmt.Println("Missing required flags")
+			os.Exit(1)
+		}
+
+		log.Println("Connecting to database...")
+		connectionString := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s sslmode=%s", *dbHost, *dbPort, *dbName, *dbUser, *dbPass, *dbSSL)
+		db, err = driver.ConnectSQL(connectionString)
+		if err != nil {
+			log.Fatal("Cannot connect to database! Dying...")
+			return nil, err
+		}
+		log.Println("Connected to database!")
+
+		tc, err := render.CreateTemplateCache()
+		if err != nil {
+			log.Fatal(err)
+			return nil, err
+		}
+
+		app.TemplateCache = tc
+
+		repo := handlers.NewRepo(&app, db)
+		handlers.NewHandlers(repo)
+
+		render.NewRenderer(&app)
+		helpers.NewHelpers(&app)
 	}
-	log.Println("Connected to database!")
-
-	tc, err := render.CreateTemplateCache()
-	if err != nil {
-		log.Fatal(err)
-		return nil, err
-	}
-
-	app.TemplateCache = tc
-
-	repo := handlers.NewRepo(&app, db)
-	handlers.NewHandlers(repo)
-
-	render.NewRenderer(&app)
-	helpers.NewHelpers(&app)
 
 	return db, nil
 }
