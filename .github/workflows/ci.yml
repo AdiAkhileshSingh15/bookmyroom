@@ -28,12 +28,19 @@ jobs:
           --health-retries 5
 
     steps:
-    - name: 'Create env file'
-      run: |
-        cd cmd/web
-        touch .env
-        echo "${{ secrets.ENV_FILE }}" > cmd/web/.env
-        cat cmd/web/.env
+    - name: Make envfile
+      uses: SpicyPizza/create-envfile@v2.0
+      with:
+        envkey_DB_NAME: bookmyroom
+        envkey_DB_USER: postgres
+        envkey_DB_PASS: adi123
+        envkey_DB_HOST: localhost
+        envkey_DB_PORT: 5432
+        envkey_SSL_MODE: disable
+        envkey_PRODUCTION: true
+        envkey_CACHE: true
+        directory: cmd/web
+        file_name: .env
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v3
