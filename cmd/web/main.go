@@ -54,7 +54,7 @@ func run() (*driver.DB, error) {
 	gob.Register(models.Restriction{})
 	gob.Register(map[string]int{})
 
-	err := godotenv.Load()
+	err := godotenv.Load("/home/adi/bookmyroom/.env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -66,7 +66,7 @@ func run() (*driver.DB, error) {
 	dbUser := os.Getenv("DB_USER")
 	dbPass := os.Getenv("DB_PASS")
 	dbPort := os.Getenv("DB_PORT")
-	dbSSL := os.Getenv("DB_SSL")
+	dbSSL := os.Getenv("SSL_MODE")
 
 	if inProduction == "true" {
 		app.InProduction = true
