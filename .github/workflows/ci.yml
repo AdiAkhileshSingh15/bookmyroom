@@ -29,11 +29,8 @@ jobs:
 
     steps:
     - name: 'Create env file'
-      env:
-        ENV_FILE: ${{ secrets.ENV_FILE }}
       run: |
-        [ "$ENVIRONMENT" = env ] && echo $ENV_FILE | base64 --decode > cmd/web/.env
-
+        echo "${{ secrets.ENV_FILE }}" > cmd/web/.env
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v3
