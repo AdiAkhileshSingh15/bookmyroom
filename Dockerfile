@@ -8,6 +8,7 @@ RUN go build -o bookmyroom cmd/web/main.go cmd/web/middleware.go cmd/web/routes.
 FROM alpine:3.18
 WORKDIR /app
 COPY --from=builder /app/bookmyroom .
+COPY .env .
 
 EXPOSE 8080
 CMD ["/app/bookmyroom"]
