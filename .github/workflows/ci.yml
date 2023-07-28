@@ -39,7 +39,7 @@ jobs:
         envkey_SSL_MODE: disable
         envkey_PRODUCTION: true
         envkey_CACHE: true
-        directory: cmd/web
+        directory: /home/runner/work/bookmyroom/cmd/web
         file_name: .env
 
     - name: Check out code into the Go module directory
