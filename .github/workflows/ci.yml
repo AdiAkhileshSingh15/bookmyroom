@@ -29,10 +29,10 @@ jobs:
 
     steps:
     - name: Set Environment Variables
-      uses: ./.github/actions/setvars
+      uses: tw3lveparsecs/github-actions-set-variables@latest
       with:
-        varFilePath: ./.github/variables/myvars.env
-        
+        envFilePath: ./.github/variables/myvars.env
+
     - name: Check out code into the Go module directory
       uses: actions/checkout@v3
 
