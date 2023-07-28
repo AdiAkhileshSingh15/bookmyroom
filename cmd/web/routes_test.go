@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/AdiAkhileshSingh15/bookmyroom/internal/config"
@@ -16,7 +15,7 @@ func TestRoutes(t *testing.T) {
 	case *chi.Mux:
 		//do nothing
 	default:
-		t.Error(fmt.Sprintf("type is not *chi.Mux, but it %T", v))
+		t.Errorf("type is not *chi.Mux, but it %T", v)
 	}
 
 }
