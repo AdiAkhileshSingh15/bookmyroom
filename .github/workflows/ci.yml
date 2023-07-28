@@ -30,7 +30,8 @@ jobs:
     steps:
     - name: 'Create env file'
       run: |
-        touch cmd/web/.env
+        cd cmd/web
+        touch .env
         echo "${{ secrets.ENV_FILE }}" > cmd/web/.env
         cat cmd/web/.env
 
