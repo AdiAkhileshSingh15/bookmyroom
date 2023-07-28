@@ -30,7 +30,9 @@ jobs:
     steps:
     - name: 'Create env file'
       run: |
+        touch cmd/web/.env
         echo "${{ secrets.ENV_FILE }}" > cmd/web/.env
+        cat cmd/web/.env
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v3
