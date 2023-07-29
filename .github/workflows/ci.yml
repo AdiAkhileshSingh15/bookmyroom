@@ -11,6 +11,15 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    env:
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASS: ${{ secrets.DB_PASS }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      SSL_MODE: ${{ secrets.SSL_MODE }}
+      PRODUCTION: ${{ secrets.PRODUCTION }}
+      CACHE: ${{ secrets.CACHE }}
 
     services:
       postgres:
@@ -28,19 +37,6 @@ jobs:
           --health-retries 5
 
     steps:
-    - name: Make envfile
-      uses: SpicyPizza/create-envfile@v2.0
-      with:
-        envkey_DB_NAME: bookmyroom
-        envkey_DB_USER: postgres
-        envkey_DB_PASS: adi123
-        envkey_DB_HOST: localhost
-        envkey_DB_PORT: 5432
-        envkey_SSL_MODE: disable
-        envkey_PRODUCTION: true
-        envkey_CACHE: true
-        directory: cmd/web
-
     - name: Check out code into the Go module directory
       uses: actions/checkout@v3
 
