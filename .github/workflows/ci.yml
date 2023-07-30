@@ -11,6 +11,15 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    env:
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASS: ${{ secrets.DB_PASS }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      SSL_MODE: ${{ secrets.SSL_MODE }}
+      PRODUCTION: ${{ secrets.PRODUCTION }}
+      CACHE: ${{ secrets.CACHE }}
 
     services:
       postgres:
