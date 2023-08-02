@@ -18,7 +18,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-const portNumber = ":9090"
+const portNumber = ":8080"
 
 var app config.AppConfig
 var session *scs.SessionManager
