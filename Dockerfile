@@ -16,6 +16,6 @@ COPY database.yml .
 COPY start.sh .
 COPY wait-for.sh .
 
-EXPOSE 8080
+EXPOSE 9090
 CMD ["/app/bookmyroom"]
 ENTRYPOINT [ "/app/start.sh" ]
