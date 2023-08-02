@@ -66,7 +66,7 @@ func run() (*driver.DB, error) {
 	dbUser := os.Getenv("DB_USER")
 	dbPass := os.Getenv("DB_PASS")
 	dbPort := os.Getenv("DB_PORT")
-	dbSSL := os.Getenv("SSL_MODE")
+	// dbSSL := os.Getenv("SSL_MODE")
 
 	if inProduction == "true" {
 		app.InProduction = true
@@ -105,7 +105,7 @@ func run() (*driver.DB, error) {
 	// connect to database
 
 	log.Println("Connecting to database...")
-	connectionString := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s sslmode=%s", dbHost, dbPort, dbName, dbUser, dbPass, dbSSL)
+	connectionString := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s", dbHost, dbPort, dbName, dbUser, dbPass)
 	db, err := driver.ConnectSQL(connectionString)
 	if err != nil {
 		log.Fatal("Cannot connect to database! Dying...")
