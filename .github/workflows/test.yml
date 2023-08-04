@@ -12,20 +12,20 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:alpine
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: adi123
-          POSTGRES_DB: bookmyroom
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    # services:
+    #   postgres:
+    #     image: postgres:alpine
+    #     env:
+    #       POSTGRES_USER: postgres
+    #       POSTGRES_PASSWORD: adi123
+    #       POSTGRES_DB: bookmyroom
+    #     ports:
+    #       - 5432:5432
+    #     options: >-
+    #       --health-cmd pg_isready
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
 
     steps:
     - name: Check out code into the Go module directory
