@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookmyroom-api-deployment
+  labels:
+    app: bookmyroom-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bookmyroom-api
+  template:
+    metadata:
+      labels:
+        app: bookmyroom-api
+    spec:
+      containers:
+      - name: bookmyroom-api
+        image: 357143580301.dkr.ecr.ap-south-1.amazonaws.com/bookmyroom:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
