@@ -1,6 +1,6 @@
-# Bookings and Reservations
+# BookmyRoom
 
-This is the repository for my bookings and reservations project.
+This is the repository for my bookmyroom project.
 
 - Built in Go version 1.20.x
   
